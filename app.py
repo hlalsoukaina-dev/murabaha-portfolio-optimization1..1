@@ -1,58 +1,34 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 from scipy.optimize import linprog
 
-# 1. إعداد الصفحة
-st.set_page_config(page_title="Optimisation Mourabaha", layout="wide")
-st.title("📊 Modèle d'Optimisation : Financements Mourabaha")
-st.write("Optimisation de l'allocation basée sur les données de Bank Al-Maghrib (2019-2025).")
+# --- LOGIQUE MATHÉMATIQUE (Le cœur du sujet) ---
+def resoudre_optimisation(g_vals, bounds):
+    # الدالة الهدف: max Z = g1*x1 + g2*x2 + g3*x3 + g4*x4
+    c = [-g for g in g_vals] 
+    A_eq = [[1, 1, 1, 1]] # مجموع النسب = 1 (100%)
+    b_eq = [1]
+    # الحل باستخدام خوارزمية HiGHS (Linear Programming)
+    res = linprog(c, A_eq=A_eq, b_eq=b_eq, bounds=bounds, method='highs')
+    return res
 
-# 2. القائمة الجانبية لإدخال المعطيات والقيود
-st.sidebar.header("Paramètres du Modèle")
+# --- INTERFACE (Le tableau de bord) ---
+st.title("Moteur d'Optimisation Financière")
 
-# معدلات النمو (تلقائية من حساباتك السابقة)
-st.sidebar.subheader("Taux de croissance (g_i)")
-g1 = st.sidebar.slider("Croissance Immobilier (g1)", 0.0, 0.1, 0.0237, format="%.4f")
-g2 = st.sidebar.slider("Croissance Automobile (g2)", 0.0, 0.1, 0.0221, format="%.4f")
-g3 = st.sidebar.slider("Croissance Équipement (g3)", 0.0, 0.2, 0.1498, format="%.4f")
-g4 = st.sidebar.slider("Croissance Mat. Premieres (g4)", -0.05, 0.05, -0.0026, format="%.4f")
+# إدخال المعطيات
+g_vals = [0.0237, 0.0221, 0.1498, -0.0026] # هادو هما معاملاتك اللي حسبتيهم
+# القيود
+bounds = [(0.30, 0.80), (0.05, 0.25), (0.05, 0.30), (0.00, 0.10)]
 
-# القيود (Bounds)
-st.sidebar.subheader("Contraintes (Bornes en %)")
-b_immo = st.sidebar.slider("Immobilier", 0.0, 1.0, (0.30, 0.80))
-b_auto = st.sidebar.slider("Automobile", 0.0, 1.0, (0.05, 0.25))
-b_equip = st.sidebar.slider("Équipement", 0.0, 1.0, (0.05, 0.30))
-b_mat = st.sidebar.slider("Mat. Premières", 0.0, 1.0, (0.00, 0.10))
+res = resoudre_optimisation(g_vals, bounds)
 
-# 3. محرك الحل (Optimization Solver)
-c = [-g1, -g2, -g3, -g4] # Négatif pour maximisation
-A_eq = [[1, 1, 1, 1]]
-b_eq = [1]
-bounds = [b_immo, b_auto, b_equip, b_mat]
-
-res = linprog(c, A_eq=A_eq, b_eq=b_eq, bounds=bounds, method='highs')
-
-# 4. عرض النتائج
+# --- كشف "السر" الرياضي ---
 if res.success:
-    results_df = pd.DataFrame({
-        "Secteur": ["Immobilier", "Automobile", "Équipement", "Mat. Premières"],
-        "Allocation Optimale (%)": [f"{x*100:.2f}%" for x in res.x],
-        "Valeur": res.x
-    })
+    st.write("### Analyse du résultat mathématique :")
+    # هنا كنشرحوا منطق الحل (Pourquoi cette allocation ?)
+    x = res.x
+    st.write(f"1. Le modèle a maximisé Z en atteignant une croissance de **{-res.fun*100:.2f}%**.")
+    st.write(f"2. **Logique de contrainte :** Pour le secteur Équipement (x3), le modèle a choisi la limite supérieure (**{bounds[2][1]*100}%**) car c'est lui qui offre le meilleur rendement ({g_vals[2]*100:.2f}%).")
+    st.write("3. **Logique de diversification :** Les autres secteurs sont ajustés pour respecter les limites (bounds) tout en complétant le budget total à 100%.")
     
-    col1, col2 = st.columns(2)
-    with col1:
-        st.write("### Répartition optimale :")
-        st.table(results_df[["Secteur", "Allocation Optimale (%)"]])
-    
-    with col2:
-        import plotly.express as px
-        fig = px.pie(results_df, values='Valeur', names='Secteur', title="Visualisation de l'allocation")
-        st.plotly_chart(fig)
-        
-    st.metric("Performance globale (Croissance Z)", f"{-res.fun*100:.2f}%")
-else:
-    st.error("Le modèle n'a pas trouvé de solution. Vérifiez vos contraintes.")
-
-st.info("Ce modèle démontre l'impact des contraintes du marché sur la performance du portefeuille.")
+    st.table(pd.DataFrame({"Secteur": ["Immo", "Auto", "Équipement", "Mat. Prem"], "Allocation": x}))
