@@ -2,27 +2,39 @@ import streamlit as st
 import pandas as pd
 from scipy.optimize import linprog
 
-st.title("Optimisation Mourabaha (Modèle Bancaire)")
+st.title("Modèle de Programmation Linéaire (Allocation Optimale)")
 
-# القيود (الآن أصبحت نسب مئوية مستقلة)
-st.sidebar.header("Répartition des risques")
-budget = st.sidebar.number_input("Budget Total", value=1000.0)
-p1 = st.sidebar.slider("Poids Immobilier (%)", 0.0, 1.0, 0.4)
-p2 = st.sidebar.slider("Poids Automobile (%)", 0.0, 1.0, 0.3)
-p3 = st.sidebar.slider("Poids Équipement (%)", 0.0, 1.0, 0.3)
+# 1. إدخال المعطيات
+budget = st.sidebar.number_input("Budget Total (en millions)", value=1000.0)
 
-# شرط توازن المحفظة: المجموع يجب أن يساوي الميزانية (x1+x2+x3 = budget)
-# والنسب المئوية التي حددتها في السلايدرز
-results = {
-    "Secteur": ["Immobilière", "Automobile", "Équipement"],
-    "Allocation": [budget * p1, budget * p2, budget * p3]
-}
+# هادو هما "معاملات النمو" اللي كيجيبو التوقع (Predictions)
+# تقدري تزيديهم كـ Sliders باش كلما تغير التوقع، تغير النتيجة
+g1 = st.sidebar.slider("Taux croissance Immobilier (g1)", 0.05, 0.20, 0.08)
+g2 = st.sidebar.slider("Taux croissance Automobile (g2)", 0.02, 0.15, 0.05)
+g3 = st.sidebar.slider("Taux croissance Équipement (g3)", 0.01, 0.10, 0.03)
 
-df = pd.DataFrame(results)
+# الدالة الهدف (Maximize Profit)
+# linprog كيدير minimization، إذن نضربو فـ -1
+c = [-g1, -g2, -g3]
 
-# عرض النتيجة
-st.table(df)
+# القيود (Constraints)
+# x1 + x2 + x3 = budget
+A_eq = [[1, 1, 1]]
+b_eq = [budget]
 
-import plotly.express as px
-fig = px.pie(df, values='Allocation', names='Secteur', title="Répartition du Portefeuille")
-st.plotly_chart(fig)
+# الحل (هنا فين كاين الـ Intelligence)
+res = linprog(c, A_eq=A_eq, b_eq=b_eq, bounds=(0, None), method='highs')
+
+if res.success:
+    x1, x2, x3 = res.x
+    st.write("### Résultat de l'optimisation :")
+    df = pd.DataFrame({
+        "Secteur": ["Immobilière", "Automobile", "Équipement"],
+        "Allocation Optimale": [x1, x2, x3],
+        "Taux Croissance": [g1, g2, g3]
+    })
+    st.table(df)
+    
+    st.info(f"Le rendement maximal théorique (Z) est de : {round(-res.fun, 2)} millions.")
+else:
+    st.error("Le modèle n'a pas pu optimiser.")
