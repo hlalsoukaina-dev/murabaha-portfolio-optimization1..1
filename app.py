@@ -1,46 +1,30 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-from scipy.optimize import linprog
-import seaborn as sns
-import matplotlib.pyplot as plt
+import plotly.express as px
 
-# العنوان ديال لابليكاسيون
+# 1. تحميل الداتا
+df = pd.read_excel('data.xlsx')
+
 st.title("Optimisation du Portefeuille Financier")
 
-# تحميل الداتا (تأكدي أن الفيشي سميتو data.xlsx ومحطوط فـ نفس البلاصة)
-@st.cache_data
-def load_data():
-    return pd.read_excel('data.xlsx')
-
-df = load_data()
-st.write("### Aperçu des données", df.head())
-
-# بارامترات ديال الربح (نفس اللي خدمنا بيهم فـ Spyder)
-g1, g2, g3, g4 = 0.0237, 0.0221, 0.1498, -0.0026
-c = [-g1, -g2, -g3, -g4] 
-A_eq = [[1, 1, 1, 1]]
-b_eq = [1]
-
-# إضافة خيارات تحكم فـ الجانب (Sidebar)
+# 2. القائمة الجانبية للقيود
 st.sidebar.header("Paramètres des contraintes")
-immo_min = st.sidebar.slider("Limite Min Immobilier", 0.0, 0.8, 0.30)
-auto_min = st.sidebar.slider("Limite Min Automobile", 0.0, 0.25, 0.05)
+min_immob = st.sidebar.slider("Limite Min Immobilier", 0.0, 1.0, 0.27)
+min_auto = st.sidebar.slider("Limite Min Automobile", 0.0, 1.0, 0.25)
+min_equip = st.sidebar.slider("Limite Min Equipement", 0.0, 1.0, 0.10)
+min_mat = st.sidebar.slider("Limite Min Matières", 0.0, 1.0, 0.05)
 
-# تحديد القيود ديال الموديل الواقعي
-bounds_realiste = [(immo_min, 0.80), (auto_min, 0.25), (0.05, 0.30), (0.00, 0.10)]
+# 3. عرض الداتا
+st.subheader("Aperçu des données")
+st.dataframe(df.head())
 
-# العملية ديال الحساب (Optimization)
-res = linprog(c, A_eq=A_eq, b_eq=b_eq, bounds=bounds_realiste, method='highs')
+# 4. حساب بسيط للنتيجة (محاكاة)
+total_mean = df[['Immobilier', 'Automobile', 'Equipement', 'Matieres Premieres']].mean()
+rendement = (total_mean.sum() / df['Totale'].mean()) * 100
 
-# عرض النتائج فـ لابليكاسيون
-if res.success:
-    st.success(f"📈 Rendement Attendu : {(-res.fun * 100):.4f}%")
-    
-    # تحويل النتائج لـ DataFrame باش نرسمو الغراف
-    results_df = pd.DataFrame(res.x * 100, index=['Immobilière', 'Automobile', 'Equipement', 'Matières P.'], columns=['Allocation (%)'])
-    
-    st.write("### Résultats de l'Allocation")
-    st.bar_chart(results_df)
-else:
-    st.error("L'optimisation n'a pas pu trouver une solution avec ces contraintes.")
+st.success(f"Rendement Attendu moyen : {rendement:.2f}%")
+
+# 5. غراف توزيع القطاعات (Pie Chart)
+st.subheader("Distribution du Portefeuille")
+fig = px.pie(values=total_mean, names=total_mean.index, title="Répartition des investissements")
+st.plotly_chart(fig)
