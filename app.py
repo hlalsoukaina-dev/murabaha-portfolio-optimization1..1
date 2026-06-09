@@ -1,42 +1,43 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import numpy as np
+from scipy.optimize import linprog
 
-# 1. إعداد الصفحة
-st.set_page_config(page_title="Optimisation Portefeuille", layout="wide")
-st.title("Optimisation du Portefeuille Financier")
+st.title("Optimisation des Financements Mourabaha")
+st.write("Modèle de programmation linéaire basé sur les données de Bank Al-Maghrib.")
 
-# 2. تحميل الداتا
-# تأكدي أن ملف data.xlsx موجود فـ نفس الفولدر فـ GitHub
-try:
-    df = pd.read_excel('data.xlsx')
-except Exception as e:
-    st.error(f"Erreur lors du chargement du fichier : {e}")
-    st.stop()
-
-# 3. القائمة الجانبية للقيود (Sliders)
+# 1. إدخال القيود عبر Sliders
 st.sidebar.header("Paramètres des contraintes")
-min_immob = st.sidebar.slider("Limite Min Immobilier", 0.0, 1.0, 0.27)
-min_auto = st.sidebar.slider("Limite Min Automobile", 0.0, 1.0, 0.25)
-min_equip = st.sidebar.slider("Limite Min Equipement", 0.0, 1.0, 0.10)
-min_mat = st.sidebar.slider("Limite Min Matières", 0.0, 1.0, 0.05)
+budget = st.sidebar.number_input("Budget Total (en millions)", min_value=100, value=1000)
+min_immo = st.sidebar.slider("Part minimale Mourabaha Immobilière (x1) %", 0.0, 1.0, 0.6)
 
-# 4. عرض البيانات
-st.subheader("Aperçu des données")
-st.dataframe(df.head())
+# 2. معاملات النمو (g1, g2, g3) - هادو تقدري تبدليهم بأرقام حقيقية من BAM
+g = [-0.08, -0.05, -0.03]  # ملاحظة: نضع إشارة سالب لأن linprog يقوم بعملية Minimization
 
-# 5. حساب الـ Rendement بشكل تفاعلي
-# هنا كنربطوا النتيجة بالقيم اللي اختاريتي فـ الـ Sliders
-rendement = (min_immob * 12) + (min_auto * 8) + (min_equip * 6) + (min_mat * 4)
+# 3. إعداد مصفوفة القيود
+# x1 + x2 + x3 <= budget
+# x1 >= min_immo * budget  => -x1 <= -min_immo * budget
+A_ub = [[1, 1, 1], [-1, 0, 0]]
+b_ub = [budget, -min_immo * budget]
 
-st.success(f"### Rendement Attendu : {rendement:.2f}%")
+# 4. الحل باستخدام Solver
+res = linprog(g, A_ub=A_ub, b_ub=b_ub, bounds=(0, None), method='highs')
 
-# 6. غراف توزيع الاستثمارات
-st.subheader("Distribution du Portefeuille")
-data_to_plot = pd.DataFrame({
-    'Secteur': ['Immobilier', 'Automobile', 'Equipement', 'Matières'],
-    'Valeur': [min_immob, min_auto, min_equip, min_mat]
-})
-
-fig = px.pie(data_to_plot, values='Valeur', names='Secteur', hole=0.3)
-st.plotly_chart(fig)
+if res.success:
+    x1, x2, x3 = res.x
+    st.success("Optimisation réussie !")
+    
+    # عرض النتائج
+    results_df = pd.DataFrame({
+        "Type de Financement": ["Immobilière (x1)", "Automobile (x2)", "Équipement (x3)"],
+        "Montant Optimal": [x1, x2, x3]
+    })
+    
+    st.table(results_df)
+    
+    # غراف النتائج
+    import plotly.express as px
+    fig = px.pie(results_df, values='Montant Optimal', names='Type de Financement', title="Allocation Optimale")
+    st.plotly_chart(fig)
+else:
+    st.error("Le modèle n'a pas trouvé de solution optimale avec ces contraintes.")
