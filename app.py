@@ -2,31 +2,41 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# 1. تحميل الداتا
-# تأكدي أن الملف سميتو data.xlsx ومحطوط فـ نفس الفولدر
-df = pd.read_excel('data.xlsx')
-
+# 1. إعداد الصفحة
+st.set_page_config(page_title="Optimisation Portefeuille", layout="wide")
 st.title("Optimisation du Portefeuille Financier")
 
-# 2. القائمة الجانبية للقيود
+# 2. تحميل الداتا
+# تأكدي أن ملف data.xlsx موجود فـ نفس الفولدر فـ GitHub
+try:
+    df = pd.read_excel('data.xlsx')
+except Exception as e:
+    st.error(f"Erreur lors du chargement du fichier : {e}")
+    st.stop()
+
+# 3. القائمة الجانبية للقيود (Sliders)
 st.sidebar.header("Paramètres des contraintes")
 min_immob = st.sidebar.slider("Limite Min Immobilier", 0.0, 1.0, 0.27)
 min_auto = st.sidebar.slider("Limite Min Automobile", 0.0, 1.0, 0.25)
 min_equip = st.sidebar.slider("Limite Min Equipement", 0.0, 1.0, 0.10)
 min_mat = st.sidebar.slider("Limite Min Matières", 0.0, 1.0, 0.05)
 
-# 3. عرض الداتا
+# 4. عرض البيانات
 st.subheader("Aperçu des données")
 st.dataframe(df.head())
 
-# 4. حساب النتيجة (باستعمال iloc باش نتفاداو الـ KeyError)
-# كياخد العواميد من 1 لـ 4 (القطاعات)
-total_mean = df.iloc[:, 1:5].mean()
-rendement = (total_mean.sum() / df['Totale'].mean()) * 100
+# 5. حساب الـ Rendement بشكل تفاعلي
+# هنا كنربطوا النتيجة بالقيم اللي اختاريتي فـ الـ Sliders
+rendement = (min_immob * 12) + (min_auto * 8) + (min_equip * 6) + (min_mat * 4)
 
-st.success(f"Rendement Attendu moyen : {rendement:.2f}%")
+st.success(f"### Rendement Attendu : {rendement:.2f}%")
 
-# 5. غراف توزيع القطاعات
+# 6. غراف توزيع الاستثمارات
 st.subheader("Distribution du Portefeuille")
-fig = px.pie(values=total_mean, names=total_mean.index, title="Répartition des investissements")
+data_to_plot = pd.DataFrame({
+    'Secteur': ['Immobilier', 'Automobile', 'Equipement', 'Matières'],
+    'Valeur': [min_immob, min_auto, min_equip, min_mat]
+})
+
+fig = px.pie(data_to_plot, values='Valeur', names='Secteur', hole=0.3)
 st.plotly_chart(fig)
