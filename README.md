@@ -18,4 +18,9 @@ To run this model, ensure you have Python installed.
    ```bash
    pip install -r requirements.txt
    python app.py
-   Soukaina Hlal Asma Daou Abdlouadoud Elkhalfi Mohammed Elgharb 
+   ## Authors
+- **Soukaina Hlal**
+- **Asma Daaou**
+- **Abdlouadoud Elkhalfi**
+- **Mohammed Elgharb**
+  
