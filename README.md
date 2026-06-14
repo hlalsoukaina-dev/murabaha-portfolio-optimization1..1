@@ -13,10 +13,9 @@ This work presents an approach based on quadratic programming to optimize asset 
 
 ## Usage
 To run this model, ensure you have Python installed.
+
 1. Install the dependencies:
    ```bash
    pip install -r requirements.txt
    python app.py
-   ## Author
-[Insert your Full Name]
-   
+   Soukaina Hlal Asma Daou Abdlouadoud Elkhalfi Mohammed Elgharb 
