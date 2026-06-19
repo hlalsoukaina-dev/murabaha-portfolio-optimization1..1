@@ -1,38 +1,33 @@
-هذا هو الـ README مرتب ومقاد، وباش نتفاداو مشكل "داخل في الكود"، ردي البال ما ديريش علامات ``` على الأسماء نهائياً.
+# 🚀 Mourabaha Portfolio Optimization
 
-انسخي هادشي اللي لتحت مباشرة:
+### A Strategic Data-Driven Approach
 
-🚀 Mourabaha Portfolio Optimization
-A Strategic Data-Driven Approach
-This repository hosts the implementation of the research project: "Managing Mourabaha Financing Risk via Quadratic Programming: A Strategic Asset Allocation Approach."
+This repository hosts the implementation of the research project: **"Managing Mourabaha Financing Risk via Quadratic Programming: A Strategic Asset Allocation Approach."**
 
-🎯 Project Overview
-In the context of participatory finance, managing a Murabaha portfolio requires a delicate balance between maximizing returns and adhering to strict Sharia-compliant investment constraints. This project leverages Quadratic Programming (QP) to provide a robust, data-driven framework for optimal asset allocation.
+<br>
 
-🛠 Key Features
-Mathematical Optimization: Implements the SLSQP algorithm to maximize the Sharpe Ratio under complex linear constraints.
+### 🎯 Project Overview
 
-Sharia-Compliant Strategy: Enforces "Long-Only" constraints and specific sectoral bounds (e.g., 40-60% Real Estate) to align with institutional mandates.
+In the context of participatory finance, managing a **Murabaha** portfolio requires a delicate balance between maximizing returns and adhering to strict Sharia-compliant investment constraints. This project leverages **Quadratic Programming (QP)** to provide a robust, data-driven framework for optimal asset allocation.
 
-Financial Robustness: Includes Winsorization to neutralize the impact of market outliers and extreme volatility, ensuring stable portfolio performance.
+<br>
 
-Decision Support: Provides a comprehensive analytical suite, including Rolling Volatility analysis and Risk-Return profiling.
+### 🛠 Key Features
 
-🏗 Methodology (CRISP-DM)
-This project follows the industry-standard CRISP-DM lifecycle, ensuring a systematic approach from data ingestion to model deployment:
+* **Mathematical Optimization:** Implements the **SLSQP algorithm** to maximize the **Sharpe Ratio** under complex linear constraints.
+* **Sharia-Compliant Strategy:** Enforces "Long-Only" constraints and specific sectoral bounds (e.g., 40-60% Real Estate) to align with institutional mandates.
+* **Financial Robustness:** Includes **Winsorization** to neutralize the impact of market outliers and extreme volatility.
 
-Data Understanding & Prep: Cleaning and normalizing heterogeneous financing datasets.
+<br>
 
-Modelling: Solving the portfolio optimization problem using scipy.optimize.
+### 📊 Project Structure
 
-Evaluation: Visualizing results via correlation matrices, boxplots, and risk-return scatter plots.
-
-📊 Project Structure
-Plaintext
+```text
 ├── data/               # Historical Murabaha financing datasets
 ├── notebook/           # Complete analysis workflow (Google Colab ready)
 ├── src/                # Core optimization scripts (SLSQP engine)
 └── requirements.txt    # Essential Python dependencies
+```
 🚀 Getting Started
 1. Clone the repository:
 
