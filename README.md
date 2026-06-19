@@ -1,27 +1,22 @@
-# 🚀 Mourabaha Portfolio Optimization
+هذا هو النص بالإنجليزية، مقاد، منظم، وبدون أي تداخل في الكود، ومصحح حسب المعلومات الجديدة (أنكم في السنة الأولى وماشي PFE):
 
-### A Strategic Data-Driven Approach
+🚀 Mourabaha Portfolio Optimization
+A Strategic Data-Driven Approach
+This repository hosts the implementation of the research article: "Managing Mourabaha Financing Risk via Quadratic Programming: A Strategic Asset Allocation Approach."
 
-This repository hosts the implementation of the research project: **"Managing Mourabaha Financing Risk via Quadratic Programming: A Strategic Asset Allocation Approach."**
+🎯 Project Overview
+In the context of participatory finance, managing a Murabaha portfolio requires a delicate balance between maximizing returns and adhering to strict Sharia-compliant investment constraints. This project leverages Quadratic Programming (QP) to provide a robust, data-driven framework for optimal asset allocation.
 
-<br>
+🛠 Key Features
+Mathematical Optimization: Implements the SLSQP algorithm to maximize the Sharpe Ratio under complex linear constraints.
 
-### 🎯 Project Overview
+Sharia-Compliant Strategy: Enforces "Long-Only" constraints and specific sectoral bounds to align with institutional mandates.
 
-In the context of participatory finance, managing a **Murabaha** portfolio requires a delicate balance between maximizing returns and adhering to strict Sharia-compliant investment constraints. This project leverages **Quadratic Programming (QP)** to provide a robust, data-driven framework for optimal asset allocation.
+Financial Robustness: Includes Winsorization to neutralize the impact of market outliers and ensure stable portfolio performance.
 
-<br>
+Decision Support: Provides a comprehensive analytical suite, including Rolling Volatility analysis and Risk-Return profiling.
 
-### 🛠 Key Features
-
-* **Mathematical Optimization:** Implements the **SLSQP algorithm** to maximize the **Sharpe Ratio** under complex linear constraints.
-* **Sharia-Compliant Strategy:** Enforces "Long-Only" constraints and specific sectoral bounds (e.g., 40-60% Real Estate) to align with institutional mandates.
-* **Financial Robustness:** Includes **Winsorization** to neutralize the impact of market outliers and extreme volatility.
-
-<br>
-
-### 📊 Project Structure
-
+📊 Project Structure
 ```text
 ├── data/               # Historical Murabaha financing datasets
 ├── notebook/           # Complete analysis workflow (Google Colab ready)
@@ -31,7 +26,7 @@ In the context of participatory finance, managing a **Murabaha** portfolio requi
 🚀 Getting Started
 1. Clone the repository:
 
-git clone https://github.com/your-username/murabaha-optimization.git
+git clone [https://github.com/your-username/murabaha-optimization.git](https://github.com/your-username/murabaha-optimization.git)
 
 2. Install dependencies:
 
@@ -50,4 +45,4 @@ Abdlouadoud Elkhalfi
 
 Mohammed Elgharb
 
-Project submitted in partial fulfillment of the requirements for the Master's degree in Financial Engineering and Participatory Finance (IFPIA).
+Research conducted as part of the academic coursework for the first year of the Master's degree in Financial Engineering and Participatory Finance (IFPIA).
