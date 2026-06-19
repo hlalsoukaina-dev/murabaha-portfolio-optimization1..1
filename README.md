@@ -1,4 +1,3 @@
-هذا هو النص بالإنجليزية، مقاد، منظم، وبدون أي تداخل في الكود، ومصحح حسب المعلومات الجديدة (أنكم في السنة الأولى وماشي PFE):
 
 🚀 Mourabaha Portfolio Optimization
 A Strategic Data-Driven Approach
