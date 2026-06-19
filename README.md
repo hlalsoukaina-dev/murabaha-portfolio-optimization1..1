@@ -42,6 +42,8 @@ This project follows the industry-standard **CRISP-DM** lifecycle, ensuring a sy
 git clone [https://github.com/your-username/murabaha-optimization.git](https://github.com/your-username/murabaha-optimization.git)
 pip install -r requirements.txt
 python src/app.py
+
+
 👥 Authors
 Soukaina Hlal
 
