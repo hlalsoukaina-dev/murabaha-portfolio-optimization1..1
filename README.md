@@ -1,3 +1,4 @@
+Markdown
 # 🚀 Mourabaha Portfolio Optimization
 
 ### A Strategic Data-Driven Approach
@@ -39,15 +40,29 @@ This project follows the industry-standard **CRISP-DM** lifecycle, ensuring a sy
 ├── src/                # Core optimization scripts (SLSQP engine)
 └── requirements.txt    # Essential Python dependencies
 
-git clone [https://github.com/your-username/murabaha-optimization.git](https://github.com/your-username/murabaha-optimization.git)
+
+🚀 Getting Started
+1. Clone the repository:
+
+git clone https://github.com/your-username/murabaha-optimization.git
+
+2. Install dependencies:
+
 pip install -r requirements.txt
+
+3. Run the model:
+
 python src/app.py
 
+👥 Authors
+Soukaina Hlal
 
-### 👥 Authors
+Asma Daaou
 
-* **Soukaina Hlal**  
-* **Asma Daaou**  
-* **Abdlouadoud Elkhalfi**  
-* **Mohammed Elgharb**
+Abdlouadoud Elkhalfi
+
+Mohammed Elgharb
+
+
+Project submitted in partial fulfillment of the requirements for the Master's degree in Financial Engineering and Participatory Finance (IFPIA).
 
