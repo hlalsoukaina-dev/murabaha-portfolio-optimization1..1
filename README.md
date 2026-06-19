@@ -1,28 +1,5 @@
-# Portfolio Optimization for Mourabaha Financing
-
-This project contains the source code associated with the research article: **"Managing Mourabaha Financing Risk via Quadratic Programming: A Strategic Asset Allocation Approach"**.
-
-## Description
-
-This work presents an approach based on quadratic programming to optimize asset allocation in a Mourabaha financing portfolio. The objective is to maximize the Sharpe ratio while adhering to strategic sectoral constraints.
-
-## Project Structure
-
-- `app.py`: The main script containing the optimization model.
-- `requirements.txt`: List of necessary Python libraries.
-- `data.xlsx`: Historical data used for the analysis.
-
-## Usage
-
-To run this model, ensure you have Python installed.
-
-1. Install the dependencies: `pip install -r requirements.txt`
-
-2. Execute the script: `python app.py`
-
-## Authors
-
-- Soukaina Hlal
-- Asma Daaou
-- Abdlouadoud Elkhalfi
-- Mohammed Elgharb
+🚀 Mourabaha Portfolio Optimization: A Strategic Data-Driven ApproachThis repository hosts the implementation of the research project: "Managing Mourabaha Financing Risk via Quadratic Programming: A Strategic Asset Allocation Approach."🎯 Project OverviewIn the context of participatory finance, managing a Murabaha portfolio requires a delicate balance between maximizing returns and adhering to strict Sharia-compliant investment constraints. This project leverages Quadratic Programming (QP) to provide a robust, data-driven framework for optimal asset allocation.  🛠 Key FeaturesMathematical Optimization: Implements the SLSQP algorithm to maximize the Sharpe Ratio under complex linear constraints.  Sharia-Compliant Strategy: Enforces "Long-Only" constraints and specific sectoral bounds (e.g., 40-60% Real Estate) to align with institutional mandates.  Financial Robustness: Includes Winsorization to neutralize the impact of market outliers and extreme volatility, ensuring stable portfolio performance.  Decision Support: Provides a comprehensive analytical suite, including Rolling Volatility analysis and Risk-Return profiling.  🏗 Methodology (CRISP-DM)This project follows the industry-standard CRISP-DM lifecycle, ensuring a systematic approach from data ingestion to model deployment:  Data Understanding & Prep: Cleaning and normalizing heterogeneous financing datasets.  Modelling: Solving the portfolio optimization problem using scipy.optimize.  Evaluation: Visualizing results via correlation matrices, boxplots, and risk-return scatter plots.  📊 Project StructurePlaintext├── data/               # Historical Murabaha financing datasets
+├── notebook/           # Complete analysis workflow (Google Colab ready)
+├── src/                # Core optimization scripts (SLSQP engine)
+└── requirements.txt    # Essential Python dependencies
+🚀 Getting StartedClone the repository:git clone [https://github.com/your-username/murabaha-optimization.git](https://github.com/your-username/murabaha-optimization.git)Install dependencies:pip install -r requirements.txtRun the model:python src/app.py👥 AuthorsSoukaina HlalAsma DaaouAbdlouadoud ElkhalfiMohammed ElgharbProject submitted in partial fulfillment of the requirements for the Master's degree in Financial Engineering and Participatory Finance (IFPIA). 
