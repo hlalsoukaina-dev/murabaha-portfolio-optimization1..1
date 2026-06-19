@@ -4,7 +4,7 @@ import numpy as np
 from scipy.optimize import minimize
 import plotly.express as px
 
-# 1. Configuration de la page
+# 1. Page Configuration
 st.set_page_config(page_title="Mourabaha Pro", layout="wide")
 
 st.markdown("""
@@ -15,37 +15,34 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🏦 Optimiseur d'Allocation Mourabaha (Quadratique)")
+st.title("🏦 Mourabaha Portfolio Optimizer (Quadratic)")
 st.markdown("---")
 
-# 2. Paramètres d'entrée
-col1, col2 = st.columns(2)
-budget = col1.number_input("Budget Total (MAD)", value=1000000)
-g1 = col2.number_input("Taux de Croissance : Immobilier (g1)", value=0.0237)
-g2 = col1.number_input("Taux de Croissance : Automobile (g2)", value=0.0221)
-g3 = col2.number_input("Taux de Croissance : Équipement (g3)", value=0.1498)
-g4 = col1.number_input("Taux de Croissance : Mat. Premières (g4)", value=-0.0026)
+# 2. Input Parameters (Sidebar)
+st.sidebar.header("⚙️ Portfolio Parameters")
+budget = st.sidebar.number_input("Total Budget (MAD)", value=1000000)
+g1 = st.sidebar.number_input("Growth Rate: Real Estate (g1)", value=0.0237)
+g2 = st.sidebar.number_input("Growth Rate: Automobile (g2)", value=0.0221)
+g3 = st.sidebar.number_input("Growth Rate: Equipment (g3)", value=0.1498)
+g4 = st.sidebar.number_input("Growth Rate: Raw Materials (g4)", value=-0.0026)
 
-if st.button("🚀 Lancer l'Optimisation"):
-    # Rendements attendus
+if st.sidebar.button("🚀 Run Optimization"):
+    # Expected returns
     returns = np.array([g1, g2, g3, g4])
     
-    # Fonction objectif (Quadratique: -Sharpe Ratio ou simple minimisation de risque)
-    # Ici on minimise -returns pour maximiser le profit sous contraintes
+    # Objective function
     def objective(weights):
         return -np.sum(weights * returns)
 
-    # Contraintes
+    # Constraints
     constraints = (
-        {'type': 'eq', 'fun': lambda x: np.sum(x) - 1}, # Somme des poids = 1
-        {'type': 'ineq', 'fun': lambda x: x - np.array([0.3, 0.05, 0.05, 0.0])}, # Lower bounds
-        {'type': 'ineq', 'fun': lambda x: np.array([0.8, 0.25, 0.3, 0.1]) - x}  # Upper bounds
+        {'type': 'eq', 'fun': lambda x: np.sum(x) - 1}, 
+        {'type': 'ineq', 'fun': lambda x: x - np.array([0.3, 0.05, 0.05, 0.0])}, 
+        {'type': 'ineq', 'fun': lambda x: np.array([0.8, 0.25, 0.3, 0.1]) - x}  
     )
     
-    # Initialisation
+    # Solver execution
     x0 = [0.25, 0.25, 0.25, 0.25]
-    
-    # Résolution avec SLSQP (Quadratic Programming solver)
     res = minimize(objective, x0, method='SLSQP', constraints=constraints)
     
     if res.success:
@@ -54,27 +51,36 @@ if st.button("🚀 Lancer l'Optimisation"):
         profit = amounts * returns
         
         df = pd.DataFrame({
-            "Secteur": ["Immobilier", "Automobile", "Équipement", "Mat. Premières"],
-            "Montant Investi (MAD)": amounts,
-            "Part (%)": res.x * 100,
-            "Profit Attendu (MAD)": profit
+            "Sector": ["Real Estate", "Automobile", "Equipment", "Raw Materials"],
+            "Invested Amount (MAD)": amounts,
+            "Allocation (%)": res.x * 100,
+            "Expected Profit (MAD)": profit
         })
         
-        st.success("Analyse terminée avec succès (Optimisation Quadratique) !")
+        st.success("Analysis completed successfully (Quadratic Programming)!")
         
         col_res1, col_res2 = st.columns([1, 1])
         with col_res1:
-            st.subheader("📊 Tableau d'Allocation")
-            st.table(df.style.format({"Montant Investi (MAD)": "{:,.2f}", "Part (%)": "{:.1f}%", "Profit Attendu (MAD)": "{:,.2f}"}))
+            st.subheader("📊 Allocation Table")
+            st.table(df.style.format({"Invested Amount (MAD)": "{:,.2f}", "Allocation (%)": "{:.1f}%", "Expected Profit (MAD)": "{:,.2f}"}))
+            
+            # Download button
+            csv = df.to_csv(index=False).encode('utf-8')
+            st.download_button("📥 Download Results (CSV)", data=csv, file_name='murabaha_allocation.csv', mime='text/csv')
+            
         with col_res2:
-            st.subheader("🍕 Distribution du Portefeuille")
-            fig_pie = px.pie(df, values='Part (%)', names='Secteur', hole=0.3)
+            st.subheader("🍕 Portfolio Distribution")
+            fig_pie = px.pie(df, values='Allocation (%)', names='Sector', hole=0.3)
             st.plotly_chart(fig_pie, use_container_width=True)
             
-        st.subheader("📈 Profit Attendu par Secteur")
-        fig_bar = px.bar(df, x='Secteur', y='Profit Attendu (MAD)', color='Secteur')
+        st.subheader("📈 Expected Profit per Sector")
+        fig_bar = px.bar(df, x='Sector', y='Expected Profit (MAD)', color='Sector')
         st.plotly_chart(fig_bar, use_container_width=True)
         
-        st.info("💡 Note : Cette analyse repose sur la Programmation Quadratique (SLSQP) pour une allocation stratégique robuste.")
+        risk = "Low" if res.x[0] > 0.5 else "High"
+        st.metric("🛡️ Risk Index", risk)
+        
+        st.info("💡 Note: This analysis is based on Quadratic Programming (SLSQP) for robust strategic allocation.")
+        st.warning("⚠️ Disclaimer: This tool is for academic purposes only.")
     else:
-        st.error("L'optimisation a échoué. Vérifiez vos contraintes.")
+        st.error("Optimization failed. Please check your constraints.")
