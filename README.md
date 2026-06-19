@@ -1,7 +1,7 @@
 
-🚀 Mourabaha Portfolio Optimization
-A Strategic Data-Driven Approach
+# 🚀 Mourabaha Portfolio Optimization
 
+### A Strategic Data-Driven Approach
 This repository hosts the implementation of the research article: "Managing Mourabaha Financing Risk via Quadratic Programming: A Strategic Asset Allocation Approach."
 
 🎯 Project Overview
