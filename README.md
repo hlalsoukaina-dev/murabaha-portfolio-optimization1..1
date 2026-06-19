@@ -44,13 +44,10 @@ pip install -r requirements.txt
 python src/app.py
 
 
-
 ### 👥 Authors
 
- * **Soukaina Hlal**
- 
- * **Asma Daaou**
- 
- * **Abdlouadoud Elkhalfi**
- 
- * **Mohammed Elgharb**
+* **Soukaina Hlal**  
+* **Asma Daaou**  
+* **Abdlouadoud Elkhalfi**  
+* **Mohammed Elgharb**
+
